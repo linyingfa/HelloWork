@@ -21,18 +21,6 @@ public class TextExecutor {
 
 
     public static void main(String[] args) {
-        SerialExecutor serialExecutor = new SerialExecutor();
-
-  /*      for (int i = 0; i < 100; i++) {
-            serialExecutor.submit(new MyRunnable(i));
-        }
-        serialExecutor.start();*/
-
-        for (int i = 0; i < 100; i++) {
-            serialExecutor.execute(new MyRunnable(i));
-        }
-
-
 //        Thread.currentThread().getName()=main
 //        我是Runnable
         MyRunnable myRunnable = new MyRunnable();
@@ -44,6 +32,18 @@ public class TextExecutor {
 //        thread.start();
 
 
+        SerialExecutor serialExecutor = new SerialExecutor();
+        //TODO 串行执行 方法1
+  /*      for (int i = 0; i < 100; i++) {
+            serialExecutor.submit(new MyRunnable(i));
+        }
+        serialExecutor.start();*/
+
+
+        //TODO 串行执行 方法2
+        for (int i = 0; i < 100; i++) {
+            serialExecutor.execute(new MyRunnable(i));
+        }
     }
 
     private static class SerialExecutor implements Executor {
