@@ -47,27 +47,21 @@ public class TextExecutor {
         final ArrayDeque<Runnable> mTasks = new ArrayDeque<Runnable>();
         private Runnable mActive;
 
-//        execute--Thread.currentThread().getName()=pool-1-thread-1
-//                Thread.currentThread().getName()=pool-1-thread-1
-//        我是Runnable
-//        execute--Thread.currentThread().getName()=pool-1-thread-2
-//                Thread.currentThread().getName()=pool-1-thread-2
-//        我是Runnable
-//        execute--Thread.currentThread().getName()=pool-1-thread-1
-//                Thread.currentThread().getName()=pool-1-thread-1
-//        我是Runnable
-
         public synchronized void execute(final Runnable r) {
             mTasks.offer(new Runnable() {
                 public void run() {
                     try {
-                        System.out.println("execute--Thread.currentThread().getName()=" + Thread.currentThread().getName());//获取线程名
+                        //TODO 这个r.run方法是调用MyRunnable的run方法，对象的方法，
+                        //TODO 现在是在子线程，现在是模拟网络，睡眠5s，然后调用下一个线程，如此轮询
                         r.run();
                     } finally {
+                        //
                         scheduleNext();
                     }
                 }
             });
+
+            //TODO 首次执行
             if (mActive == null) {
                 scheduleNext();
             }
