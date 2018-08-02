@@ -19,7 +19,6 @@ public class Consumer implements Runnable {
 
     public void run() {
         while (true) {
-
             String message = messageQueue.poll();
             if (message == null) {
                 System.out.println("------------- null");
