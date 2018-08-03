@@ -17,11 +17,11 @@ public class LockTest2 {
         }
 
         public void produce(int val) {
+            System.out.printf("%s 准备生产(%d)个  size=%d\n", Thread.currentThread().getName(), val, size);
 //        lock.lock();
 //        try {
             size += val;
-            System.out.printf("%s produce(%d) --> size=%d\n",
-                    Thread.currentThread().getName(), val, size);
+            System.out.printf("%s 开始生产(%d)个 size=%d\n", Thread.currentThread().getName(), val, size);
 //        } catch (InterruptedException e) {
 //        } finally {
 //            lock.unlock();
@@ -29,18 +29,18 @@ public class LockTest2 {
         }
 
         public void consume(int val) {
+            System.out.printf("%s 准备消费(%d)  size=%d\n", Thread.currentThread().getName(), val, size);
 //        lock.lock();
 //        try {
             size -= val;
-            System.out.printf("%s consume(%d) <-- size=%d\n",
-                    Thread.currentThread().getName(), val, size);
+//            System.out.printf("%s consume(%d) <-- size=%d\n", Thread.currentThread().getName(), val, size);
+            System.out.printf("%s 开始消费(%d)  size=%d\n", Thread.currentThread().getName(), val, size);
 //        } finally {
 //            lock.unlock();
 //        }
         }
     }
 
-    ;
 
     // 生产者
     public static class Producer {
@@ -89,7 +89,9 @@ public class LockTest2 {
         mCus.consume(150);
         mPro.produce(110);
 
-        //“示例2”在“示例1”的基础上去掉了lock锁。在“示例2”中，仓库中最终剩余的产品是-60，而不是我们期望的50。原因是我们没有实现对仓库的互斥访问。
+        //“示例2”在“示例1”的基础上去掉了lock锁。
+        // 在“示例2”中，仓库中最终剩余的产品是-60，
+        // 而不是我们期望的50。原因是我们没有实现对仓库的互斥访问。
 
 
     }

@@ -24,22 +24,28 @@ public class LockTest3 {
         }
 
         public void produce(int val) {
+            System.out.printf("%s 准备生产(%3d) --> , size=%3d\n", Thread.currentThread().getName(), val, size);
             lock.lock();
             try {
                 // left 表示“想要生产的数量”(有可能生产量太多，需多此生产)
                 int left = val;
                 while (left > 0) {
                     // 库存已满时，等待“消费者”消费产品。
-                    while (size >= capacity)
+                    // 仓库的容量  capacity;
+                    // 仓库的实际数量  size;
+                    while (size >= capacity)//满仓
                         fullCondtion.await();
                     // 获取“实际生产的数量”(即库存中新增的数量)
                     // 如果“库存”+“想要生产的数量”>“总的容量”，则“实际增量”=“总的容量”-“当前容量”。(此时填满仓库)
                     // 否则“实际增量”=“想要生产的数量”
+                    //TODO 仓库实际的数量+需要生产的数量>仓库容量(仓库容量-实际仓库数量作为需要生产的数量：需要生产的数量)
+                    //TODO 仓库容量默认是100
                     int inc = (size + left) > capacity ? (capacity - size) : left;
+                    //TODO 更新实际数量
                     size += inc;
+                    //
                     left -= inc;
-                    System.out.printf("%s produce(%3d) --> left=%3d, inc=%3d, size=%3d\n",
-                            Thread.currentThread().getName(), val, left, inc, size);
+                    System.out.printf("%s 开始生产(%3d) --> left=%3d, inc=%3d, size=%3d\n", Thread.currentThread().getName(), val, left, inc, size);
                     // 通知“消费者”可以消费了。
                     emptyCondtion.signal();
                 }
@@ -50,6 +56,7 @@ public class LockTest3 {
         }
 
         public void consume(int val) {
+            System.out.printf("%s 准备消费(%3d) <--  size=%3d\n", Thread.currentThread().getName(), val, size);
             lock.lock();
             try {
                 // left 表示“客户要消费数量”(有可能消费量太大，库存不够，需多此消费)
@@ -64,8 +71,7 @@ public class LockTest3 {
                     int dec = (size < left) ? size : left;
                     size -= dec;
                     left -= dec;
-                    System.out.printf("%s consume(%3d) <-- left=%3d, dec=%3d, size=%3d\n",
-                            Thread.currentThread().getName(), val, left, dec, size);
+                    System.out.printf("%s 开始消费(%3d) <-- left=%3d, dec=%3d, size=%3d\n", Thread.currentThread().getName(), val, left, dec, size);
                     fullCondtion.signal();
                 }
             } catch (InterruptedException e) {
